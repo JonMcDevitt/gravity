@@ -5,16 +5,12 @@ package dal.gravity;
  */
 public abstract class AbstractPendulum {
 
-
-    /**
-     * gravitational constant
-     */
-    private static final double GRAVITY = 9.80665;
     /* instance variables - string length, point mass, angular displacement
          * at t=0, constant for local gravitational field in m/s^2 (e.g., 9.81 on Earth)
          */
     private double stringLength, pointMass;
     private double theta0;
+    private GravityModel model;
 
     /**
      * Creates a new Pendulum instance using
@@ -31,6 +27,18 @@ public abstract class AbstractPendulum {
         if (validDisplacement(inTheta0)) theta0 = inTheta0;
         else throw new IllegalArgumentException
                 ("invalid angular displacement: " + inTheta0);
+        model = new GravityConstant(9.80665);
+    }
+
+    AbstractPendulum(double inLength, double inMass, double inTheta0, double inGravity) {
+        if (validStringLength(inLength)) stringLength = inLength;
+        else throw new IllegalArgumentException("invalid string length: " + inLength);
+        if (validPointMass(inMass)) pointMass = inMass;
+        else throw new IllegalArgumentException("invalid point mass: " + inMass);
+        if (validDisplacement(inTheta0)) theta0 = inTheta0;
+        else throw new IllegalArgumentException
+                ("invalid angular displacement: " + inTheta0);
+        model = new GravityConstant(inGravity);
     }
 
     private boolean validDisplacement(double val) {
@@ -62,7 +70,7 @@ public abstract class AbstractPendulum {
     }
 
     public double getGravitationalField() {
-        return GRAVITY;
+        return model.getGravitationalField();
     }
 
 }
